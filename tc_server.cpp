@@ -2,8 +2,7 @@
 
 tc_server::tc_server() {
 	tc_port=4444;
-	getListenSocket();
-	fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);	//non-blocking std::cin
+	msg_read=0;
 	logfile.open("log.txt",std::ios::out|std::ios::in|std::ios::trunc);
 	if (!logfile.is_open()) {
 		perror("cant initialize logfile");
@@ -27,7 +26,8 @@ void tc_server::setOptions(int argc, char** argv) {
         } else {
             
                 tc_port=std::atoi(argv[1]);
-                std::cout <<"listen port: "<<tc_port<<std::endl
+                std::cout<<"listen port "<<tc_port<<std::endl
+			<<"message limit "<<MSG_LIMIT<<std::endl
                 	<<"---------------------------\n";
         }
 }
@@ -61,9 +61,8 @@ void tc_server::getListenSocket() {
 }
 
 void tc_server::processing() {
-	char cmnd;
-	while(cmnd!='q') {
-		
+	while(msg_read<MSG_LIMIT) {
+
         	acc_sock = accept(listener, NULL, NULL);
         	if(acc_sock < 0) {
             		perror("server.accept() error");
@@ -79,19 +78,20 @@ void tc_server::processing() {
 
 	        case 0:
         		close(listener);
-			
-			std::cout<<"fork "<<getpid()<<"connection established\n";
+			std::cout<<"fork "<<getpid()<<" start\n";
                         recv(acc_sock,request,BUF_SIZE, 0);
 		        writeLog();
-			std::cout<<"fork "<<getpid()<<"connection closed\n";
+			std::cout<<"fork "<<getpid()<<" finish\n\n";
 			 			
 		        close(acc_sock);
            		exit(0);
 		default:
+			msg_read++;
 			close(acc_sock);
 						
         	}
-		std::cin>>cmnd;
+		std::cout<<"messages read:"<<msg_read<<std::endl;
+
     	}
 }
 
@@ -104,6 +104,7 @@ void tc_server::writeLog() {
 int main(int argc, char** argv) {
 	tc_server srv1;
 	srv1.setOptions(argc, argv);
+	srv1.getListenSocket();
 	srv1.processing();
 	return 0;
 

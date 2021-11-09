@@ -3,13 +3,15 @@
 tc_client::tc_client() {
 	tc_name="user1";
 	tc_period=2;
-	tc_port=4444;
+	tc_port=4444;      
+}
 
-  	addr.sin_family = AF_INET;
+void tc_client::initAddr() {	
+	addr.sin_family = AF_INET;
 	addr.sin_port = htons(tc_port); 
 	addr.sin_addr.s_addr = inet_addr(SERVER_IP);
-    
 }
+
 
 void tc_client::initSock() {
 	sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -63,6 +65,7 @@ std::string getCurDT() {
 int main(int argc, char** argv) {
 	tc_client cl1;
 	cl1.setOptions(argc, argv);
+	cl1.initAddr();
 	cl1.processing();
 	return 0;
 }

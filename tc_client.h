@@ -32,7 +32,8 @@ class tc_client {
 public:
         tc_client();
         void processing();
-        void setOptions(int argc,char** argv);
+        void initAddr();
+	void setOptions(int argc,char** argv);
 };
 
 std::string getCurDT();
