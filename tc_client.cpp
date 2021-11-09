@@ -1,10 +1,5 @@
 #include "tc_client.h"
 
-tc_client::tc_client() {
-	tc_name="user1";
-	tc_period=2;
-	tc_port=4444;      
-}
 
 void tc_client::initAddr() {	
 	addr.sin_family = AF_INET;

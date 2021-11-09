@@ -30,7 +30,6 @@ class tc_client {
 
         void initSock();
 public:
-        tc_client();
         void processing();
         void initAddr();
 	void setOptions(int argc,char** argv);
